@@ -1,0 +1,22 @@
+sequenceDiagram
+participant browser
+participant server
+
+    Note right of browser: User enters a note and submits
+    Note right of browser: Browser executes javascript logic and prevents a page refresh
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    Note right of browser: 1 POST request sent to the server with the body message and date stamp
+    Note left of server: Server reads data type as JSON for parsing
+    Note left of server: Server reads data type as JSON for parsing and stores note
+    activate server
+    server-->>browser: Success Status Code: 201
+    deactivate server
+
+
+    Note right of browser: Browser renders new note on page
+    browser->>server: Render new note on page
+    activate server
+    server-->>browser: modified DOM
+    deactivate server
+
+

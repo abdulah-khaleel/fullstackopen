@@ -1,0 +1,37 @@
+sequenceDiagram
+participant browser
+participant server
+
+    Note right of browser: User enteres a note and saves
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    Note right of browser: Post request is sent with payload with a note body and date
+    Note left of server: Server reads body of POST request and creates a new object (note)
+    Note left of server: Server adds to the array of notes and saves notes to the database
+    activate server
+    server-->>browser: HTTP Status Code 302 with location of /notes
+    Note left of server: Server asks browser to do a new HTTP GET request for the location of notes
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    Note right of browser: Second GET request to fetch notes, which leads to 3 additional HTTP requests
+    activate server
+    server-->>browser: the HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+
+    activate server
+    server-->>browser: the css file (main.css)
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: the JavaScript file (main.js)
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: the data (json file)
+    deactivate server
+
+    Note right of browser: The browser renders the HTML document with the new list of notes
