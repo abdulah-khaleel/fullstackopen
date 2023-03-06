@@ -4,7 +4,7 @@ const Button = (props) => {
   return <button onClick={props.handleClick}>{props.text}</button>;
 };
 
-const Stat = (props) => {
+const StatsLine = (props) => {
   return (
     <p>
       {props.label} {props.stateVar}
@@ -17,31 +17,23 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const rateGood = () => {
-    setGood((oldVal) => oldVal + 1);
-  };
-
-  const rateNeutral = () => {
-    setNeutral((oldVal) => oldVal + 1);
-  };
-
-  const rateBad = () => {
-    setBad((oldVal) => oldVal + 1);
+  const rate = (stateVar, setStateVar) => {
+    setStateVar(stateVar + 1);
   };
 
   return (
     <>
       <h2>give feedback</h2>
       <div className="buttons-container">
-        <Button text="good" handleClick={rateGood} />
-        <Button text="neutral" handleClick={rateNeutral} />
-        <Button text="bad" handleClick={rateBad} />
+        <Button text="good" handleClick={() => rate(good, setGood)} />
+        <Button text="neutral" handleClick={() => rate(neutral, setNeutral)} />
+        <Button text="bad" handleClick={() => rate(bad, setBad)} />
       </div>
       <div className="results">
         <h2>statistics</h2>
-        <Stat label="good" stateVar={good} />
-        <Stat label="neutral" stateVar={neutral} />
-        <Stat label="bad" stateVar={bad} />
+        <StatsLine label="good" stateVar={good} />
+        <StatsLine label="neutral" stateVar={neutral} />
+        <StatsLine label="bad" stateVar={bad} />
       </div>
     </>
   );
