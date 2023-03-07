@@ -4,11 +4,27 @@ const Button = (props) => {
   return <button onClick={props.handleClick}>{props.text}</button>;
 };
 
-const StatsLine = (props) => {
+const StatisticLine = (props) => {
   return (
-    <p>
-      {props.label} {props.stateVar}
-    </p>
+    <tr>
+      <td>{props.label}</td>
+      <td>{props.stateVar}</td>
+    </tr>
+  );
+};
+
+const Statistics = (props) => {
+  return (
+    <table>
+      <tbody>
+        <StatisticLine label="good" stateVar={props.good} />
+        <StatisticLine label="neutral" stateVar={props.neutral} />
+        <StatisticLine label="bad" stateVar={props.bad} />
+        <StatisticLine label="all" stateVar={props.all} />
+        <StatisticLine label="average" stateVar={props.avg} />
+        <StatisticLine label="positive" stateVar={props.positive} />
+      </tbody>
+    </table>
   );
 };
 
@@ -42,7 +58,6 @@ const App = () => {
       counts[el] = counts[el] ? counts[el] + 1 : 1;
     });
     const x = counts[1] > 0 ? (counts[1] / arr.length) * 100 : 0;
-    console.log(`${x.toFixed(2)} %`);
     setPositive((oldVal) => `${x.toFixed(2)} %`);
   };
 
@@ -65,16 +80,20 @@ const App = () => {
         <Button text="neutral" handleClick={() => rate(setNeutral)} />
         <Button text="bad" handleClick={() => rate(setBad)} />
       </div>
-      <div className="results">
-        <h2>statistics</h2>
-        <StatsLine label="good" stateVar={good} />
-        <StatsLine label="neutral" stateVar={neutral} />
-        <StatsLine label="bad" stateVar={bad} />
-        <StatsLine label="all" stateVar={all} />
-        <StatsLine label="average" stateVar={avg} />
-        <StatsLine label="positive" stateVar={positive} />
-        <p id="arr">{`[${ratings.join(",")}]`}</p>
-      </div>
+      <h2>statistics</h2>
+      {all > 0 ? (
+        <Statistics
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          all={all}
+          positive={positive}
+          avg={avg}
+          ratings={ratings}
+        />
+      ) : (
+        <p>No feedback given</p>
+      )}
     </>
   );
 };
