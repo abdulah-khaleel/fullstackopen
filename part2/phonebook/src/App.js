@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { findRenderedDOMComponentWithClass } from 'react-dom/test-utils'
+import Filter from './components/Filter/Filter'
+import Form from './components/Form/Form'
+import Persons from './components/Persons/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -29,6 +31,7 @@ const App = () => {
     }
     setPersons((oldArr) => persons.concat(personObj))
     setNewName('')
+    setNewNumber('')
   }
 
   const handleNameChange = (event) => {
@@ -42,7 +45,7 @@ const App = () => {
   const handleFilterChange = (event) => {
     const filterVal = event.target.value
     setNewFilter(filterVal)
-    filterNumbers(filterVal)
+    filterNumbers(filterVal.trim())
   }
 
   const filterNumbers = (str) => {
@@ -56,46 +59,19 @@ const App = () => {
     setFilteredPersons(filteredData)
   }
 
-  const displayNumbers = (arr) => {
-    return arr.map((person) => (
-      <p key={person.id}>
-        {person.name} {'   '}
-        {person.number}
-      </p>
-    ))
-  }
-
-  let numbersEl
-  if (newFilter.length === 0) {
-    numbersEl = displayNumbers(persons)
-  } else {
-    numbersEl = displayNumbers(filteredPersons)
-  }
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          filter shown with:{' '}
-          <input onChange={handleFilterChange} value={newFilter} />
-        </div>
-      </form>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input onChange={handleNameChange} value={newName} />
-        </div>
-        <div>
-          number: <input onChange={handleNumberChange} />
-        </div>
-
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter handleFilterChange={handleFilterChange} newFilter={newFilter} />
+      <Form
+        addPerson={addPerson}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        newName={newName}
+        newNumber={newNumber}
+      />
       <h2>Numbers</h2>
-      <div>{numbersEl}</div>
+      <Persons persons={newFilter.length === 0 ? persons : filteredPersons} />
     </div>
   )
 }
