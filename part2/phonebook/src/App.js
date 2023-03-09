@@ -1,27 +1,35 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
-  const [newName, setNewName] = useState("");
+  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }])
+  const [newName, setNewName] = useState('')
 
   const addPerson = (event) => {
-    event.preventDefault();
-    console.log(event.target.value);
+    event.preventDefault()
+    console.log(event.target.value)
+    if (persons.some((e) => e.name === newName)) {
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
     const personObj = {
       name: newName,
-    };
-    setPersons((oldArr) => persons.concat(personObj));
-    setNewName("");
-  };
+    }
+    setPersons((oldArr) => persons.concat(personObj))
+    setNewName('')
+  }
+
+  // const checkName = (arr) => {
+  //   if (arr.)
+  // }
 
   const handleNameChange = (event) => {
-    console.log(event.target.value);
-    setNewName(event.target.value);
-  };
+    console.log(event.target.value)
+    setNewName(event.target.value)
+  }
 
   const numbersEl = persons.map((person) => (
     <p key={Math.random()}>{person.name}</p>
-  ));
+  ))
 
   return (
     <div>
@@ -37,7 +45,7 @@ const App = () => {
       <h2>Numbers</h2>
       <div>{numbersEl}</div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
