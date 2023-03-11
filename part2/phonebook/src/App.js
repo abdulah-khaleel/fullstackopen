@@ -4,6 +4,7 @@ import Form from './components/Form/Form'
 import Persons from './components/Persons/Persons'
 import axios from 'axios'
 import personService from './services/persons'
+import Button from './components/Button/Button'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -17,7 +18,7 @@ const App = () => {
       setPersons(a)
     })
   }, [])
-  console.log('render', persons.length, 'persons')
+  // console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -64,6 +65,13 @@ const App = () => {
     setFilteredPersons(filteredData)
   }
 
+  const deleteHandler = (id) => {
+    if (window.confirm(`Delete ${persons.find((p) => p.id === id).name}?`)) {
+      personService.deletePerson(id)
+      setPersons(persons.filter((person) => person.id !== id))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -76,7 +84,10 @@ const App = () => {
         newNumber={newNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={newFilter.length === 0 ? persons : filteredPersons} />
+      <Persons
+        persons={newFilter.length === 0 ? persons : filteredPersons}
+        onDeleteClick={deleteHandler}
+      />
     </div>
   )
 }

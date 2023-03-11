@@ -1,8 +1,13 @@
-const Person = ({ name, number }) => {
+import Button from '../../Button/Button'
+
+const Person = ({ name, number, onDeleteClick }) => {
   return (
-    <p>
-      {name} {number}
-    </p>
+    <div>
+      <p style={{ display: 'inline' }}>
+        {name} {number}
+      </p>
+      <Button onDeleteClick={onDeleteClick}>delete</Button>
+    </div>
   )
 }
 
