@@ -5,6 +5,8 @@ import Persons from './components/Persons/Persons'
 import axios from 'axios'
 import personService from './services/persons'
 import Button from './components/Button/Button'
+import Notification from './components/Notification/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,13 +14,25 @@ const App = () => {
   const [filteredPersons, setFilteredPersons] = useState([])
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService.getAll().then((a) => {
       setPersons(a)
     })
   }, [])
-  // console.log('render', persons.length, 'persons')
+
+  const displayNotification = (message) => {
+    setErrorMessage(`${message}`)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
+  }
+
+  const clearFields = () => {
+    setNewName('')
+    setNewNumber('')
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -43,7 +57,10 @@ const App = () => {
             )
           )
         })
+        clearFields()
+        displayNotification(`Updated ${personObj.name}'s number`)
       }
+
       return
     }
     const personObj = {
@@ -52,8 +69,8 @@ const App = () => {
     }
     personService.create(personObj).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson))
-      setNewName('')
-      setNewNumber('')
+      clearFields()
+      displayNotification(`Added ${returnedPerson.name}`)
     })
   }
 
@@ -92,6 +109,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter handleFilterChange={handleFilterChange} newFilter={newFilter} />
       <Form
         addPerson={addPerson}
