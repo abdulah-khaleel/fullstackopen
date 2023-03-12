@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter/Filter'
 import Form from './components/Form/Form'
 import Persons from './components/Persons/Persons'
-import axios from 'axios'
 import personService from './services/persons'
-import Button from './components/Button/Button'
 import Notification from './components/Notification/Notification'
 import './index.css'
 
@@ -15,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [messageType, setMessageType] = useState('success')
 
   useEffect(() => {
     personService.getAll().then((a) => {
@@ -22,7 +21,8 @@ const App = () => {
     })
   }, [])
 
-  const displayNotification = (message) => {
+  const displayNotification = (message, messageType) => {
+    setMessageType(messageType)
     setErrorMessage(`${message}`)
     setTimeout(() => {
       setErrorMessage(null)
@@ -58,7 +58,7 @@ const App = () => {
           )
         })
         clearFields()
-        displayNotification(`Updated ${personObj.name}'s number`)
+        displayNotification(`Updated ${personObj.name}'s number`, 'success')
       }
 
       return
@@ -70,7 +70,7 @@ const App = () => {
     personService.create(personObj).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson))
       clearFields()
-      displayNotification(`Added ${returnedPerson.name}`)
+      displayNotification(`Added ${returnedPerson.name}`, 'success')
     })
   }
 
@@ -100,16 +100,38 @@ const App = () => {
   }
 
   const deleteHandler = (id) => {
+    const deletedPerson = persons.find((p) => p.id === id)
     if (window.confirm(`Delete ${persons.find((p) => p.id === id).name}?`)) {
-      personService.deletePerson(id)
+      personService.deletePerson(id).catch((error) => {
+        displayNotification(
+          `Information of '${deletedPerson.name}' has already been removed from server`,
+          'error'
+        )
+        // setNotes(persons.filter((n) => n.id !== id))
+      })
       setPersons(persons.filter((person) => person.id !== id))
     }
   }
 
+  // noteService
+  //   .update(id, changedNote)
+  //   .then((returnedNote) => {
+  //     setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)))
+  //   })
+  //   .catch((error) => {
+  //     setErrorMessage(
+  //       `Note '${note.content}' was already removed from server`
+  //     )
+  //     setTimeout(() => {
+  //       setErrorMessage(null)
+  //     }, 5000)
+  //     setNotes(notes.filter((n) => n.id !== id))
+  //   })
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} messageType={messageType} />
       <Filter handleFilterChange={handleFilterChange} newFilter={newFilter} />
       <Form
         addPerson={addPerson}
