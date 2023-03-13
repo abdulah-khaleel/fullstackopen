@@ -1,4 +1,5 @@
 const Country = ({ country }) => {
+  const styles = { marginTop: 1, marginBottom: 1 }
   const countryLanguages = []
   for (const [key, val] of Object.entries(country.languages)) {
     countryLanguages.push(`${val}`)
@@ -9,8 +10,8 @@ const Country = ({ country }) => {
     <div className="country">
       <h1>{country.name.common}</h1>
       <div className="country-stats">
-        <p>capital {country.capital}</p>
-        <p>area {country.area}</p>
+        <p style={styles}>capital {country.capital}</p>
+        <p style={styles}>area {country.area}</p>
       </div>
       <h3>languages:</h3>
       <ul>
