@@ -1,10 +1,11 @@
-const Country = ({ country }) => {
+import Weather from '../Weather/Weather'
+
+const Country = ({ country, cityWeather, setCityWeather }) => {
   const styles = { marginTop: 1, marginBottom: 1 }
   const countryLanguages = []
   for (const [key, val] of Object.entries(country.languages)) {
     countryLanguages.push(`${val}`)
   }
-  console.log('t', countryLanguages)
 
   return (
     <div className="country">
@@ -20,6 +21,7 @@ const Country = ({ country }) => {
         ))}
       </ul>
       <img src={country.flags.png} alt={country.flags.alt} />
+      <Weather cityWeather={cityWeather} />
     </div>
   )
 }

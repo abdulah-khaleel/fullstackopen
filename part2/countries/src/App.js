@@ -12,6 +12,12 @@ function App() {
   const [searchString, setSearchString] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [country, setCountry] = useState(null)
+  const [cityWeather, setCityWeather] = useState({
+    cityName: '',
+    temperature: '',
+    windSpeed: '',
+    icon: '',
+  })
   const [resultList, setResultList] = useState([])
 
   useEffect(() => {
@@ -25,6 +31,7 @@ function App() {
               setCountry((oldCountry) => response.data[0])
               setResultList([])
               setErrorMessage(null)
+              getWeather(`${response.data[0].capital}`)
             } else if (res.length > 1 && res.length < 10) {
               const searchMatch = res.map((country) => country.name.common)
               setResultList((x) => searchMatch)
@@ -41,12 +48,31 @@ function App() {
             setCountry(null)
           })
       }
-    }, 700)
+    }, 300)
     return () => {
       // cleanup function
       clearTimeout(fetchTimer)
     }
   }, [searchString])
+
+  const getWeather = (cityName) => {
+    axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&APPID=${api_key}&units=metric`
+      )
+      .then((response) => {
+        const res = response.data
+        const cityWeatherObj = {
+          cityName: cityName,
+          temperature: res.main.temp,
+          windSpeed: res.wind.speed,
+          icon: res.weather[0].icon,
+        }
+        setCityWeather((oldV) => cityWeatherObj)
+      })
+  }
+
+  const api_key = process.env.REACT_APP_API_KEY
 
   const onSearchChange = (event) => {
     setSearchString(event.target.value)
@@ -59,6 +85,7 @@ function App() {
         const res = response.data
         if (res.length === 1) {
           setCountry((oldCountry) => response.data[0])
+          getWeather(`${response.data[0].capital}`)
           setResultList([])
           setErrorMessage(null)
         } else if (res.length > 1) {
@@ -75,7 +102,7 @@ function App() {
       <Search handleSearchChange={onSearchChange} searchString={searchString} />
       {errorMessage ? <ErrorMessageComponent message={errorMessage} /> : ''}
       <SearchResult resultList={resultList} onShowClick={showCountryHandler} />
-      {country ? <Country country={country} /> : ''}
+      {country ? <Country country={country} cityWeather={cityWeather} /> : ''}
     </div>
   )
 }
